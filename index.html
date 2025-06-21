@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubham News Agency</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. General Styling & Setup --- */
+        :root {
+            --primary-bg: #1a1a2e;
+            --secondary-bg: rgba(22, 22, 40, 0.85);
+            --card-bg: rgba(43, 43, 62, 0.7);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0e0e0; /* Adjusted for better contrast on buttons */
+            --accent-color: #4a90e2;
+            --hover-accent: #6aa8f5;
+            --border-color: rgba(74, 144, 226, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--primary-bg);
+            /* Background Image from a reliable source (Pexels) */
+            background-image: url('https://images.pexels.com/photos/2882565/pexels-photo-2882565.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Blur Overlay for better text readability */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--secondary-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: -1;
+        }
+
+        /* --- 2. Main Container & Layout --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* --- 3. Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* --- 4. Landing Page / Initial View --- */
+        #landing-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #landing-page h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 10px var(--shadow-color);
+        }
+
+        #language-select {
+            font-size: 1.2rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            background-color: var(--secondary-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0c0' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.2rem center;
+        }
+
+        #language-select:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        /* --- 5. Main Content Area --- */
+        #main-content {
+            display: none; /* Initially hidden */
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        header {
+            position: relative; /* For positioning back button */
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease;
+        }
+
+        #back-button {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #back-button:hover {
+            background-color: var(--hover-accent);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        #date-picker {
+            background-color: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #date-picker:hover {
+            border-color: var(--accent-color);
+        }
+        
+        /* --- 6. Category Navigation --- */
+        #category-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .category-btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background-color: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .category-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* --- 7. News Container & Cards --- */
+        #news-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .news-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.4s ease;
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0; /* Start hidden for animation */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* To contain the image */
+        }
+        
+        .news-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px var(--shadow-color);
+            border-color: var(--hover-accent);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .news-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-content h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .news-content h3 a:hover {
+            color: var(--hover-accent);
+        }
+
+        .news-content .source {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.75rem;
+        }
+        
+        .news-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        /* --- 8. Loader & Error Messages --- */
+        .loader-container, #error-message, #api-key-message {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none; /* Hidden by default */
+        }
+
+        #error-message, #api-key-message {
+            background-color: rgba(255, 82, 82, 0.2);
+            border: 1px solid rgba(255, 82, 82, 0.5);
+            color: #ffcdd2;
+        }
+
+        #api-key-message a {
+            color: var(--hover-accent);
+            font-weight: bold;
+        }
+
+
+        /* --- 9. Responsive Design --- */
+        @media (max-width: 768px) {
+            #landing-page h1 { font-size: 2.5rem; }
+            header h1 { font-size: 2rem; }
+            #category-nav { gap: 0.5rem; }
+            .category-btn { padding: 0.5rem 1rem; font-size: 0.9rem; }
+            #back-button { top: 0.2rem; left: 0.2rem; width: 35px; height: 35px; font-size: 1.3rem;}
+        }
+        
+        @media (max-width: 480px) {
+            .container { width: 95%; padding: 1rem 0.5rem; }
+            #landing-page h1 { font-size: 2rem; }
+            .controls-container { flex-direction: column; }
+            #news-container { grid-template-columns: 1fr; }
+            #back-button { top: 0; left: 0; width: 30px; height: 30px; font-size: 1.2rem;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- This view is shown on first load -->
+        <section id="landing-page">
+            <h1>Welcome to Shubham News Agency</h1>
+            <select id="language-select">
+                <option value="">-- Select Language / भाषा चुनें --</option>
+                <option value="en">English</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+            </select>
+        </section>
+
+        <!-- This view is shown after a language is selected -->
+        <main id="main-content">
+            <header>
+                <button id="back-button" aria-label="Go Back">←</button>
+                <h1 id="main-header">Shubham News Agency</h1>
+                <div class="controls-container">
+                    <label for="date-picker">Select Date:</label>
+                    <input type="date" id="date-picker">
+                </div>
+                <nav id="category-nav"></nav>
+            </header>
+            
+            <div id="loader" class="loader-container"><p>Loading Latest News...</p></div>
+            <div id="api-key-message"></div>
+            <div id="error-message"></div>
+
+            <section id="news-container"></section>
+        </main>
+    </div>
+
+    <script>
+    // --- 1. Setup & Configuration ---
+    const landingPage = document.getElementById('landing-page');
+    const mainContent = document.getElementById('main-content');
+    const languageSelect = document.getElementById('language-select');
+    const categoryNav = document.getElementById('category-nav');
+    const newsContainer = document.getElementById('news-container');
+    const loader = document.getElementById('loader');
+    const errorMessage = document.getElementById('error-message');
+    const apiKeyMessage = document.getElementById('api-key-message');
+    const mainHeader = document.getElementById('main-header');
+    const datePicker = document.getElementById('date-picker');
+    const backButton = document.getElementById('back-button');
+
+    // API Keys for GNews.io
+    const GNEWS_API_KEY_EN = '04cf83a7494024f61348eb841d19757e'; // GNews.io key for English
+    const GNEWS_API_KEY_HI = 'e1da4daa326e42f9865c807da97a6ed1'; // GNews.io key for Hindi
+
+    // GNews API categories mapping (for both English and Hindi, using common structure)
+    const categories = {
+        en: {
+            'Breaking News': { topic: 'general' },
+            'World': { topic: 'world' },
+            'Business': { topic: 'business' },
+            'Technology': { topic: 'technology' },
+            'Gaming': { topic: 'entertainment', query: 'gaming OR video games' },
+            'Science': { topic: 'science' },
+            // Sports: Prioritize cricket, include other sports via query
+            'Sports': { topic: 'sports', query: 'cricket OR football OR basketball OR tennis OR sports' }, 
+            // Politics: International politics via query
+            'Politics': { topic: 'world', query: 'international politics OR global affairs' }, 
+            // Geopolitics: India-focused Geopolitics via query
+            'Geopolitics': { topic: 'world', query: 'geopolitics India' }, 
+            'India News': { topic: 'nation', query: 'India' } // India specific news
+        },
+        hi: {
+            'ताज़ा ख़बरें': { topic: 'general' }, // Breaking News
+            'बिहार समाचार': { topic: 'nation', query: 'Bihar' }, // Bihar News
+            'राजनीति': { topic: 'nation' }, // Politics
+            'बॉलीवुड': { topic: 'entertainment' }, // Bollywood
+            'टेक्नोलॉजी': { topic: 'technology' }, // Technology
+            'व्यापार': { topic: 'business' }, // Business
+            // Sports: Prioritize cricket, include other sports via query
+            'खेल': { topic: 'sports', query: 'क्रिकेट OR खेल' }, 
+        }
+    };
+
+    // --- 2. Initial Checks & Event Listeners ---
+    
+    // Event Listeners for main interactions
+    languageSelect.addEventListener('change', handleLanguageChange);
+    categoryNav.addEventListener('click', handleCategoryClick);
+    datePicker.addEventListener('change', handleDateChange);
+    backButton.addEventListener('click', handleBackButtonClick);
+
+    // Set default date to today
+    datePicker.value = new Date().toISOString().split('T')[0];
+    
+    // --- 3. Core Functions ---
+
+    /**
+     * Handles the selection of a language.
+     */
+    function handleLanguageChange() {
+        currentLang = languageSelect.value;
+        if (!currentLang) {
+            // If no language is selected, return to landing page state
+            mainContent.style.display = 'none';
+            landingPage.style.display = 'flex';
+            newsContainer.innerHTML = '';
+            errorMessage.style.display = 'none';
+            categoryNav.innerHTML = '';
+            currentLang = '';
+            currentCategory = '';
+            return;
+        }
+        
+        landingPage.style.display = 'none';
+        mainContent.style.display = 'block';
+
+        mainHeader.textContent = currentLang === 'hi' ? 'शुभम समाचार एजेंसी' : 'Shubham News Agency';
+        renderCategoryButtons(currentLang);
+        
+        // Auto-click the first category if available
+        const firstCategoryButton = categoryNav.querySelector('.category-btn');
+        if (firstCategoryButton) {
+            firstCategoryButton.click();
+        }
+    }
+
+    /**
+     * Handles clicks on category buttons.
+     */
+    function handleCategoryClick(e) {
+        if (e.target.tagName !== 'BUTTON') return;
+
+        const allButtons = categoryNav.querySelectorAll('.category-btn');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        currentCategory = e.target.dataset.category;
+        fetchNews();
+    }
+    
+    /**
+     * Handles the change of date from the date picker.
+     */
+    function handleDateChange() {
+        if (currentLang && currentCategory) {
+            fetchNews();
+        }
+    }
+
+    /**
+     * Handles the back button click, returning to the language selection.
+     */
+    function handleBackButtonClick() {
+        mainContent.style.display = 'none';
+        landingPage.style.display = 'flex';
+        languageSelect.value = ''; // Reset language selection
+        newsContainer.innerHTML = ''; // Clear news
+        errorMessage.style.display = 'none'; // Hide errors
+        categoryNav.innerHTML = ''; // Clear category buttons
+        currentLang = ''; // Reset current language
+        currentCategory = ''; // Reset current category
+    }
+
+    /**
+     * Fetches news from GNews.io.
+     * Attempts to fetch up to 40 articles per category.
+     */
+    async function fetchNews() {
+        loader.style.display = 'block';
+        newsContainer.innerHTML = '';
+        errorMessage.style.display = 'none';
+
+        // NOTE: GNews.io's free tier typically limits responses to ~10 articles
+        // even if 'max' is set higher. To consistently get 40 articles, a paid
+        // GNews.io subscription would likely be required.
+        const maxArticles = 40; 
+        let articles = [];
+
+        try {
+            let API_KEY;
+            let categoryData;
+
+            if (currentLang === 'en') {
+                API_KEY = GNEWS_API_KEY_EN;
+                categoryData = categories.en[currentCategory];
+            } else if (currentLang === 'hi') {
+                API_KEY = GNEWS_API_KEY_HI;
+                categoryData = categories.hi[currentCategory];
+            } else {
+                throw new Error("No language selected or API key missing.");
+            }
+
+            if (!categoryData) {
+                displayError("Invalid category selected."); 
+                return;
+            }
+
+            const topic = categoryData.topic;
+            const query = categoryData.query;
+
+            // GNews.io date format (ISO 8601)
+            const selectedDate = new Date(datePicker.value);
+            const fromDate = new Date(selectedDate);
+            fromDate.setHours(0, 0, 0, 0);
+            const toDate = new Date(selectedDate);
+            toDate.setHours(23, 59, 59, 999);
+            
+            const fromISO = fromDate.toISOString().slice(0, -5) + 'Z'; 
+            const toISO = toDate.toISOString().slice(0, -5) + 'Z';
+
+            // Construct GNews.io API URL
+            let gnewsApiUrl;
+            if(query) {
+                gnewsApiUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=${currentLang}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
+            } else {
+                gnewsApiUrl = `https://gnews.io/api/v4/top-headlines?lang=${currentLang}&topic=${topic}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
+            }
+            
+            const gnewsResponse = await fetch(gnewsApiUrl);
+            if (!gnewsResponse.ok) {
+                const errorData = await gnewsResponse.json();
+                const errorMsg = errorData.errors && errorData.errors.length > 0 
+                                 ? errorData.errors[0] 
+                                 : 'Unknown GNews.io API error.';
+                throw new Error(`GNews.io Error: ${errorMsg}`);
+            }
+            const gnewsData = await gnewsResponse.json();
+            articles = gnewsData.articles; // GNews.io generally returns unique articles in one response
+
+            renderNews(articles.slice(0, maxArticles)); // Ensure we only render up to maxArticles
+
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            displayError(`Sorry, couldn't load news. The error is: "${error.message}". Please try another category or date. Please note that GNews.io free tier may limit the number of articles returned.`);
+        } finally {
+            loader.style.display = 'none';
+        }
+    }
+    
+    /**
+     * Renders the fetched news articles onto the page.
+     */
+    function renderNews(articles) {
+        newsContainer.innerHTML = ''; 
+        
+        if (!articles || articles.length === 0) {
+            displayError("No news articles found for this category and date.");
+            return;
+        }
+
+        articles.forEach((article, index) => {
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            // Stagger animation for a nicer effect
+            card.style.animationDelay = `${index * 0.05}s`;
+
+            // Use article image or a placeholder
+            const imageUrl = article.image || 'https://placehold.co/600x400/2b2b3e/e0e0e0?text=News';
+            
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="News Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/2b2b3e/e0e0e0?text=Image+Not+Found';">
+                <div class="news-content">
+                    <div class="source">${article.source.name}</div>
+                    <h3>
+                        <a href="${article.url}" target="_blank" rel="noopener noreferrer">${article.title}</a>
+                    </h3>
+                    <p>${article.description || 'No description available.'}</p>
+                </div>
+            `;
+            newsContainer.appendChild(card);
+        });
+    }
+
+    // --- 4. UI Helper Functions ---
+    
+    /**
+     * Renders category buttons for the selected language.
+     */
+    function renderCategoryButtons(lang) {
+        categoryNav.innerHTML = '';
+        const categoryKeys = Object.keys(categories[lang]);
+
+        categoryKeys.forEach(category => {
+            const button = document.createElement('button');
+            button.className = 'category-btn';
+            button.textContent = category;
+            button.dataset.category = category;
+            categoryNav.appendChild(button);
+        });
+    }
+    
+    /**
+     * Displays a prominent message to add the API key. (Not used if keys are hardcoded)
+     */
+     function showApiKeyMessage() {
+        landingPage.style.display = 'none';
+        apiKeyMessage.style.display = 'block';
+        apiKeyMessage.innerHTML = `Welcome! To start fetching news, please ensure your GNews.io API keys for English and Hindi are correctly set in the script.`;
+    }
+
+    /**
+     * Displays a generic error message in the UI.
+     */
+    function displayError(message) {
+        newsContainer.innerHTML = '';
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+    }
+
+    </script>
+</body>
+</html>
+
