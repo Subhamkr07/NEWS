@@ -17,7 +17,7 @@
             --secondary-bg: rgba(22, 22, 40, 0.85);
             --card-bg: rgba(43, 43, 62, 0.7);
             --text-primary: #e0e0e0;
-            --text-secondary: #a0e0e0; /* Adjusted for better contrast on buttons */
+            --text-secondary: #a0e0e0; 
             --accent-color: #4a90e2;
             --hover-accent: #6aa8f5;
             --border-color: rgba(74, 144, 226, 0.3);
@@ -95,7 +95,13 @@
             text-shadow: 2px 2px 10px var(--shadow-color);
         }
 
-        #language-select {
+        .lang-selection-container {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .lang-btn {
             font-size: 1.2rem;
             padding: 0.8rem 1.5rem;
             border-radius: 50px;
@@ -104,21 +110,35 @@
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.3s ease;
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0c0' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1.2rem center;
         }
 
-        #language-select:hover {
+        .lang-btn:hover {
             border-color: var(--accent-color);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
         }
 
-        /* --- 5. Main Content Area --- */
-        #main-content {
+        #search-news-button {
+            font-size: 1.1rem;
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        #search-news-button:hover {
+            background-color: var(--hover-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+
+
+        /* --- 5. Main Content Area & Search Content Area --- */
+        #main-content, #search-content {
             display: none; /* Initially hidden */
             animation: fadeIn 0.8s ease-in-out;
         }
@@ -169,7 +189,7 @@
             flex-wrap: wrap;
         }
 
-        #date-picker {
+        #date-picker, #search-input {
             background-color: var(--secondary-bg);
             border: 2px solid var(--border-color);
             color: var(--text-primary);
@@ -178,11 +198,32 @@
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 100%; /* Make search input responsive */
+            max-width: 400px;
         }
-        #date-picker:hover {
+        #date-picker:hover, #search-input:hover {
             border-color: var(--accent-color);
         }
-        
+
+        #search-button {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #search-button:hover {
+            background-color: var(--hover-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
         /* --- 6. Category Navigation --- */
         #category-nav {
             display: flex;
@@ -331,12 +372,12 @@
     <div class="container">
         <!-- This view is shown on first load -->
         <section id="landing-page">
-            <h1>Welcome to Shubham News Agency</h1>
-            <select id="language-select">
-                <option value="">-- Select Language / भाषा चुनें --</option>
-                <option value="en">English</option>
-                <option value="hi">हिन्दी (Hindi)</option>
-            </select>
+            <h1>शुभम समाचार एजेंसी में आपका स्वागत है</h1>
+            <div class="lang-selection-container">
+                <div class="lang-btn" id="english-lang-btn" data-lang="en">English</div>
+                <div class="lang-btn" id="hindi-lang-btn" data-lang="hi">हिन्दी (Hindi)</div>
+            </div>
+            <button id="search-news-button">समाचार खोजें</button>
         </section>
 
         <!-- This view is shown after a language is selected -->
@@ -345,54 +386,86 @@
                 <button id="back-button" aria-label="Go Back">←</button>
                 <h1 id="main-header">Shubham News Agency</h1>
                 <div class="controls-container">
-                    <label for="date-picker">Select Date:</label>
+                    <label for="date-picker">दिनांक चुनें:</label>
                     <input type="date" id="date-picker">
                 </div>
                 <nav id="category-nav"></nav>
             </header>
             
-            <div id="loader" class="loader-container"><p>Loading Latest News...</p></div>
+            <div id="loader" class="loader-container"><p>नवीनतम समाचार लोड हो रहे हैं...</p></div>
             <div id="api-key-message"></div>
             <div id="error-message"></div>
 
             <section id="news-container"></section>
         </main>
+
+        <!-- This view is shown for searching news -->
+        <section id="search-content">
+            <header>
+                <button id="back-button-search" aria-label="Go Back">←</button>
+                <h1 id="search-header">समाचार खोजें</h1>
+                <div class="controls-container">
+                    <input type="text" id="search-input" placeholder="समाचार खोजें...">
+                    <button id="perform-search-button">खोजें</button>
+                </div>
+            </header>
+
+            <div id="loader-search" class="loader-container"><p>खोज परिणाम लोड हो रहे हैं...</p></div>
+            <div id="error-message-search"></div>
+
+            <section id="search-news-container" class="news-container"></section>
+        </section>
     </div>
 
     <script>
     // --- 1. Setup & Configuration ---
     const landingPage = document.getElementById('landing-page');
     const mainContent = document.getElementById('main-content');
-    const languageSelect = document.getElementById('language-select');
+    const searchContent = document.getElementById('search-content'); // New search content section
+
+    const englishLangBtn = document.getElementById('english-lang-btn'); // New language button
+    const hindiLangBtn = document.getElementById('hindi-lang-btn');   // New language button
+    const searchNewsButton = document.getElementById('search-news-button'); // New search news button
+
     const categoryNav = document.getElementById('category-nav');
-    const newsContainer = document.getElementById('news-container');
-    const loader = document.getElementById('loader');
-    const errorMessage = document.getElementById('error-message');
-    const apiKeyMessage = document.getElementById('api-key-message');
+    const newsContainer = document.getElementById('news-container'); // For category news
+    const searchNewsContainer = document.getElementById('search-news-container'); // For search news
+
+    const loader = document.getElementById('loader'); // For category news
+    const loaderSearch = document.getElementById('loader-search'); // For search news
+
+    const errorMessage = document.getElementById('error-message'); // For category news
+    const errorMessageSearch = document.getElementById('error-message-search'); // For search news
+
     const mainHeader = document.getElementById('main-header');
+    const searchHeader = document.getElementById('search-header'); // New search header
+
     const datePicker = document.getElementById('date-picker');
-    const backButton = document.getElementById('back-button');
+    const searchInput = document.getElementById('search-input'); // New search input
+    const performSearchButton = document.getElementById('perform-search-button'); // New search button
+
+    const backButtonMain = document.getElementById('back-button'); // Back button for main content
+    const backButtonSearch = document.getElementById('back-button-search'); // Back button for search content
 
     // API Keys for GNews.io
-    const GNEWS_API_KEY_EN = '04cf83a7494024f61348eb841d19757e'; // GNews.io key for English
-    const GNEWS_API_KEY_HI = 'e1da4daa326e42f9865c807da97a6ed1'; // GNews.io key for Hindi
+    const GNEWS_API_KEY_EN = '04cf83a7494024f61348eb841d19757e'; // GNews.io key for English categories
+    const GNEWS_API_KEY_HI = 'e1da4daa326e42f9865c807da97a6ed1'; // GNews.io key for Hindi categories
+    const GNEWS_SEARCH_API_KEY = '91f331b8e80cb72abca932839aad9103'; // GNews.io key for general search
 
-    // GNews API categories mapping (for both English and Hindi, using common structure)
+    // GNews API categories mapping
     const categories = {
         en: {
             'Breaking News': { topic: 'general' },
             'World': { topic: 'world' },
             'Business': { topic: 'business' },
             'Technology': { topic: 'technology' },
-            'Gaming': { topic: 'entertainment', query: 'gaming OR video games' },
+            'Entertainment': { topic: 'entertainment' },
+            'Health': { topic: 'health' },
+            'Environment': { topic: 'science', query: 'environment OR "climate change"' },
             'Science': { topic: 'science' },
-            // Sports: Prioritize cricket, include other sports via query
-            'Sports': { topic: 'sports', query: 'cricket OR football OR basketball OR tennis OR sports' }, 
-            // Politics: International politics via query
-            'Politics': { topic: 'world', query: 'international politics OR global affairs' }, 
-            // Geopolitics: India-focused Geopolitics via query
-            'Geopolitics': { topic: 'world', query: 'geopolitics India' }, 
-            'India News': { topic: 'nation', query: 'India' } // India specific news
+            'Sports': { topic: 'sports' },
+            'Politics': { topic: 'world', query: 'politics' },
+            'India News': { topic: 'nation', query: 'India' }
         },
         hi: {
             'ताज़ा ख़बरें': { topic: 'general' }, // Breaking News
@@ -401,18 +474,40 @@
             'बॉलीवुड': { topic: 'entertainment' }, // Bollywood
             'टेक्नोलॉजी': { topic: 'technology' }, // Technology
             'व्यापार': { topic: 'business' }, // Business
-            // Sports: Prioritize cricket, include other sports via query
-            'खेल': { topic: 'sports', query: 'क्रिकेट OR खेल' }, 
+            'क्रिकेट': { topic: 'sports', query: 'क्रिकेट -क्रांति -स्वतंत्रता' }, // Cricket - specifically targeting cricket news, excluding words like 'revolution'
+            'भारत': { topic: 'nation', query: 'भारत' } // India News - targeting current news related to India
+            // NOTE: GNews.io free tier does not support filtering by specific news sources (e.g., Aaj Tak, News18 Hindi).
+            // The query parameter is used to broaden or narrow the search within a topic.
         }
     };
 
+    let currentLang = ''; // Stores the currently selected language ('en' or 'hi')
+    let currentCategory = ''; // Stores the currently selected category for news browsing
+    let renderedArticleUrls = new Set(); // Stores URLs of articles already rendered to prevent duplicates
+
     // --- 2. Initial Checks & Event Listeners ---
     
-    // Event Listeners for main interactions
-    languageSelect.addEventListener('change', handleLanguageChange);
+    // Language selection buttons
+    englishLangBtn.addEventListener('click', () => handleLanguageChange('en'));
+    hindiLangBtn.addEventListener('click', () => handleLanguageChange('hi'));
+
+    // Search News button on landing page
+    searchNewsButton.addEventListener('click', handleSearchNewsButtonClick);
+
+    // Category navigation (main content)
     categoryNav.addEventListener('click', handleCategoryClick);
     datePicker.addEventListener('change', handleDateChange);
-    backButton.addEventListener('click', handleBackButtonClick);
+    backButtonMain.addEventListener('click', () => goBackToLanding());
+
+    // Search content
+    performSearchButton.addEventListener('click', fetchSearchNews);
+    // Allow searching on Enter key press in search input
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            fetchSearchNews();
+        }
+    });
+    backButtonSearch.addEventListener('click', () => goBackToLanding());
 
     // Set default date to today
     datePicker.value = new Date().toISOString().split('T')[0];
@@ -421,23 +516,14 @@
 
     /**
      * Handles the selection of a language.
+     * @param {string} lang - The selected language ('en' or 'hi').
      */
-    function handleLanguageChange() {
-        currentLang = languageSelect.value;
-        if (!currentLang) {
-            // If no language is selected, return to landing page state
-            mainContent.style.display = 'none';
-            landingPage.style.display = 'flex';
-            newsContainer.innerHTML = '';
-            errorMessage.style.display = 'none';
-            categoryNav.innerHTML = '';
-            currentLang = '';
-            currentCategory = '';
-            return;
-        }
+    function handleLanguageChange(lang) {
+        currentLang = lang;
         
         landingPage.style.display = 'none';
         mainContent.style.display = 'block';
+        searchContent.style.display = 'none'; // Ensure search content is hidden
 
         mainHeader.textContent = currentLang === 'hi' ? 'शुभम समाचार एजेंसी' : 'Shubham News Agency';
         renderCategoryButtons(currentLang);
@@ -460,7 +546,7 @@
         e.target.classList.add('active');
 
         currentCategory = e.target.dataset.category;
-        fetchNews();
+        fetchCategoryNews(); // Call specific function for category news
     }
     
     /**
@@ -468,32 +554,49 @@
      */
     function handleDateChange() {
         if (currentLang && currentCategory) {
-            fetchNews();
+            fetchCategoryNews(); // Call specific function for category news
         }
     }
 
     /**
-     * Handles the back button click, returning to the language selection.
+     * Handles the click of the "Search News" button on the landing page.
      */
-    function handleBackButtonClick() {
-        mainContent.style.display = 'none';
-        landingPage.style.display = 'flex';
-        languageSelect.value = ''; // Reset language selection
-        newsContainer.innerHTML = ''; // Clear news
-        errorMessage.style.display = 'none'; // Hide errors
-        categoryNav.innerHTML = ''; // Clear category buttons
-        currentLang = ''; // Reset current language
-        currentCategory = ''; // Reset current category
+    function handleSearchNewsButtonClick() {
+        landingPage.style.display = 'none';
+        mainContent.style.display = 'none'; // Ensure main content is hidden
+        searchContent.style.display = 'block';
+        searchNewsContainer.innerHTML = ''; // Clear previous search results
+        errorMessageSearch.style.display = 'none'; // Hide any previous search errors
+        searchInput.value = ''; // Clear search input
     }
 
     /**
-     * Fetches news from GNews.io.
+     * Navigates back to the landing page.
+     */
+    function goBackToLanding() {
+        mainContent.style.display = 'none';
+        searchContent.style.display = 'none'; // Also hide search content
+        landingPage.style.display = 'flex';
+        // Reset states
+        currentLang = ''; 
+        currentCategory = '';
+        newsContainer.innerHTML = ''; 
+        searchNewsContainer.innerHTML = '';
+        errorMessage.style.display = 'none'; 
+        errorMessageSearch.style.display = 'none';
+        categoryNav.innerHTML = ''; 
+        renderedArticleUrls.clear(); // Clear the set of rendered article URLs
+    }
+
+    /**
+     * Fetches news from GNews.io for categories.
      * Attempts to fetch up to 40 articles per category.
      */
-    async function fetchNews() {
+    async function fetchCategoryNews() {
         loader.style.display = 'block';
         newsContainer.innerHTML = '';
         errorMessage.style.display = 'none';
+        renderedArticleUrls.clear(); // Clear the set for new category/date fetch
 
         // NOTE: GNews.io's free tier typically limits responses to ~10 articles
         // even if 'max' is set higher. To consistently get 40 articles, a paid
@@ -502,18 +605,8 @@
         let articles = [];
 
         try {
-            let API_KEY;
-            let categoryData;
-
-            if (currentLang === 'en') {
-                API_KEY = GNEWS_API_KEY_EN;
-                categoryData = categories.en[currentCategory];
-            } else if (currentLang === 'hi') {
-                API_KEY = GNEWS_API_KEY_HI;
-                categoryData = categories.hi[currentCategory];
-            } else {
-                throw new Error("No language selected or API key missing.");
-            }
+            const API_KEY = currentLang === 'en' ? GNEWS_API_KEY_EN : GNEWS_API_KEY_HI;
+            const categoryData = categories[currentLang][currentCategory];
 
             if (!categoryData) {
                 displayError("Invalid category selected."); 
@@ -550,49 +643,106 @@
                 throw new Error(`GNews.io Error: ${errorMsg}`);
             }
             const gnewsData = await gnewsResponse.json();
-            articles = gnewsData.articles; // GNews.io generally returns unique articles in one response
+            articles = gnewsData.articles; 
 
-            renderNews(articles.slice(0, maxArticles)); // Ensure we only render up to maxArticles
+            renderNews(articles.slice(0, maxArticles), newsContainer); 
 
         } catch (error) {
             console.error('Fetch Error:', error);
-            displayError(`Sorry, couldn't load news. The error is: "${error.message}". Please try another category or date. Please note that GNews.io free tier may limit the number of articles returned.`);
+            displayError(`क्षमा करें, समाचार लोड नहीं हो सके। त्रुटि है: "${error.message}"। कृपया कोई अन्य श्रेणी या तिथि आज़माएँ। कृपया ध्यान दें कि GNews.io का मुफ़्त टियर लौटाए गए लेखों की संख्या को सीमित कर सकता है।`, newsContainer, errorMessage);
         } finally {
             loader.style.display = 'none';
         }
     }
-    
+
     /**
-     * Renders the fetched news articles onto the page.
+     * Fetches news based on search input from GNews.io.
+     * Attempts to fetch up to 40 articles.
      */
-    function renderNews(articles) {
-        newsContainer.innerHTML = ''; 
-        
-        if (!articles || articles.length === 0) {
-            displayError("No news articles found for this category and date.");
+    async function fetchSearchNews() {
+        loaderSearch.style.display = 'block';
+        searchNewsContainer.innerHTML = '';
+        errorMessageSearch.style.display = 'none';
+        renderedArticleUrls.clear(); // Clear the set for new search fetch
+
+        const searchQuery = searchInput.value.trim();
+        if (!searchQuery) {
+            displayError("कृपया खोज के लिए कुछ दर्ज करें।", searchNewsContainer, errorMessageSearch);
+            loaderSearch.style.display = 'none';
             return;
         }
 
-        articles.forEach((article, index) => {
+        const maxArticles = 40;
+        // If currentLang is not set (e.g., coming directly from landing page), default search language to English
+        const searchLang = currentLang || 'en'; 
+
+        try {
+            const API_KEY = GNEWS_SEARCH_API_KEY;
+            const apiUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(searchQuery)}&lang=${searchLang}&token=${API_KEY}&max=${maxArticles}`;
+
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMsg = errorData.errors && errorData.errors.length > 0 
+                                 ? errorData.errors[0] 
+                                 : 'Unknown GNews.io API error.';
+                throw new Error(`GNews.io Error: ${errorMsg}`);
+            }
+            const data = await response.json();
+            
+            renderNews(data.articles.slice(0, maxArticles), searchNewsContainer);
+
+        } catch (error) {
+            console.error('Search Fetch Error:', error);
+            displayError(`खोज परिणाम लोड नहीं हो सके। त्रुटि है: "${error.message}"। कृपया पुनः प्रयास करें।`, searchNewsContainer, errorMessageSearch);
+        } finally {
+            loaderSearch.style.display = 'none';
+        }
+    }
+    
+    /**
+     * Renders the fetched news articles onto the specified container.
+     * Prevents duplicate articles by checking `renderedArticleUrls` set.
+     * @param {Array<Object>} articles - Array of article objects.
+     * @param {HTMLElement} targetContainer - The container to render news into (e.g., newsContainer or searchNewsContainer).
+     */
+    function renderNews(articles, targetContainer) {
+        // Only clear the container if it's a new load (not appending more articles)
+        // For this app, it's always a fresh load, so clearing here is fine.
+        targetContainer.innerHTML = ''; 
+        renderedArticleUrls.clear(); // Clear for each new render operation
+
+        const articlesToRender = [];
+        articles.forEach(article => {
+            if (article.url && !renderedArticleUrls.has(article.url)) {
+                articlesToRender.push(article);
+                renderedArticleUrls.add(article.url);
+            }
+        });
+
+        if (articlesToRender.length === 0) {
+            displayError("इस श्रेणी या खोज के लिए कोई समाचार लेख नहीं मिला।", targetContainer);
+            return;
+        }
+
+        articlesToRender.forEach((article, index) => {
             const card = document.createElement('div');
             card.className = 'news-card';
-            // Stagger animation for a nicer effect
             card.style.animationDelay = `${index * 0.05}s`;
 
-            // Use article image or a placeholder
             const imageUrl = article.image || 'https://placehold.co/600x400/2b2b3e/e0e0e0?text=News';
             
             card.innerHTML = `
-                <img src="${imageUrl}" alt="News Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/2b2b3e/e0e0e0?text=Image+Not+Found';">
+                <img src="${imageUrl}" alt="समाचार छवि" onerror="this.onerror=null;this.src='https://placehold.co/600x400/2b2b3e/e0e0e0?text=छवि+नहीं+मिली';">
                 <div class="news-content">
                     <div class="source">${article.source.name}</div>
                     <h3>
                         <a href="${article.url}" target="_blank" rel="noopener noreferrer">${article.title}</a>
                     </h3>
-                    <p>${article.description || 'No description available.'}</p>
+                    <p>${article.description || 'कोई विवरण उपलब्ध नहीं है।'}</p>
                 </div>
             `;
-            newsContainer.appendChild(card);
+            targetContainer.appendChild(card);
         });
     }
 
@@ -615,21 +765,15 @@
     }
     
     /**
-     * Displays a prominent message to add the API key. (Not used if keys are hardcoded)
-     */
-     function showApiKeyMessage() {
-        landingPage.style.display = 'none';
-        apiKeyMessage.style.display = 'block';
-        apiKeyMessage.innerHTML = `Welcome! To start fetching news, please ensure your GNews.io API keys for English and Hindi are correctly set in the script.`;
-    }
-
-    /**
      * Displays a generic error message in the UI.
+     * @param {string} message - The error message to display.
+     * @param {HTMLElement} [container=newsContainer] - The container whose content should be cleared.
+     * @param {HTMLElement} [errorDisplayElement=errorMessage] - The element to display the error message in.
      */
-    function displayError(message) {
-        newsContainer.innerHTML = '';
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
+    function displayError(message, container = newsContainer, errorDisplayElement = errorMessage) {
+        container.innerHTML = ''; // Clear news results
+        errorDisplayElement.textContent = message;
+        errorDisplayElement.style.display = 'block';
     }
 
     </script>
