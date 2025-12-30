@@ -629,9 +629,9 @@
             // Construct GNews.io API URL
             let gnewsApiUrl;
             if(query) {
-                gnewsApiUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=${currentLang}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
+                gnewsApiUrl = `https://cors.skapi.workers.dev/?https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=${currentLang}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
             } else {
-                gnewsApiUrl = `https://gnews.io/api/v4/top-headlines?lang=${currentLang}&topic=${topic}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
+                gnewsApiUrl = `https://cors.skapi.workers.dev/?https://gnews.io/api/v4/top-headlines?lang=${currentLang}&topic=${topic}&token=${API_KEY}&from=${fromISO}&to=${toISO}&max=${maxArticles}`;
             }
             
             const gnewsResponse = await fetch(gnewsApiUrl);
@@ -779,4 +779,5 @@
     </script>
 </body>
 </html>
+
 
