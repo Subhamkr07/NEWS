@@ -678,7 +678,7 @@
 
         try {
             const API_KEY = GNEWS_SEARCH_API_KEY;
-            const apiUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(searchQuery)}&lang=${searchLang}&token=${API_KEY}&max=${maxArticles}`;
+            const apiUrl = `https://cors.skapi.workers.dev/?https://gnews.io/api/v4/search?q=${encodeURIComponent(searchQuery)}&lang=${searchLang}&token=${API_KEY}&max=${maxArticles}`;
 
             const response = await fetch(apiUrl);
             if (!response.ok) {
@@ -779,5 +779,6 @@
     </script>
 </body>
 </html>
+
 
 
